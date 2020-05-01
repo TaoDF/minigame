@@ -27,7 +27,7 @@ int main()
 
     Texture t1, t2, t3;
     t1.loadFromFile("./pic/cesuo.png");
-    t2.loadFromFile("./pic/baba.png");
+    t2.loadFromFile("./pic/bianpao.png");
     t3.loadFromFile("./pic/lao8.png");
 
     Sprite sBackground(t1), sBall(t2), sPlayer(t3);
