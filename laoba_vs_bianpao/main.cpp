@@ -24,18 +24,23 @@ void setWall(int x, int y, int w, int h)
 
 int main()
 {
+    bool boom_flag = false;
+
     RenderWindow window(VideoMode(800,600), "Lao8 Volleyball");
     window.setFramerateLimit(60);
 
-    Texture t_bg, t_bianpao, t_lao8, t_kucha;
+    Texture t_bg, t_bianpao, t_lao8, t_kucha, t_boom;
     t_bg.loadFromFile("./pic/bg.png");
     t_bianpao.loadFromFile("./pic/bianpao.png");
     t_lao8.loadFromFile("./pic/lao8.png");
     t_kucha.loadFromFile("./pic/kucha.png");
+    t_boom.loadFromFile("./pic/boom.png");
 
-    Sprite sBackground(t_bg), sBianPao(t_bianpao), sLao8(t_lao8), sKucha(t_kucha);
+    Sprite sBackground(t_bg), sBianPao(t_bianpao), sLao8(t_lao8), sKucha(t_kucha),sBoom(t_boom);
     sBianPao.setOrigin(32,32);
-    sKucha.setPosition(600,300);
+    int kucha_x = 600;
+    int kucha_y = 300;
+    sKucha.setPosition(kucha_x,kucha_y);
 
     //---box2d-------
     setWall(400,550,2000,10); //floor
@@ -48,7 +53,7 @@ int main()
 
     b2BodyDef bdef;
     bdef.type = b2_dynamicBody;
-    bdef.position.Set(10,1);
+    bdef.position.Set(3,1);
     b2Body *pB_bianpao = World.CreateBody(&bdef);
 
     b2CircleShape circle;
@@ -61,7 +66,7 @@ int main()
     int data_bianpao = BIANPAO;
     pB_bianpao->SetUserData((void*)data_bianpao);
     ////////players
-    bdef.position.Set(20,2);
+    bdef.position.Set(2,15);
     b2CircleShape c;
     c.m_radius = 32/SCALE;
     c.m_p.Set(0,13/SCALE);
@@ -92,19 +97,19 @@ int main()
 
         if(Keyboard::isKeyPressed(Keyboard::Right)) vel.x = 5;
         if(Keyboard::isKeyPressed(Keyboard::Left)) vel.x = -5;
-        if(Keyboard::isKeyPressed(Keyboard::Up)) vel.y = -5;
-        if(Keyboard::isKeyPressed(Keyboard::Down)) vel.y = 5;
+        //if(Keyboard::isKeyPressed(Keyboard::Up)) vel.y = -5;
+        //if(Keyboard::isKeyPressed(Keyboard::Down)) vel.y = 5;
         
         
-        //if(Keyboard::isKeyPressed(Keyboard::Up)) if(pos.y*SCALE>463) vel.y = -13;
+        if(Keyboard::isKeyPressed(Keyboard::Up)) if(pos.y*SCALE>463) vel.y = -10;
 
         if(!Keyboard::isKeyPressed(Keyboard::Right))
         if(!Keyboard::isKeyPressed(Keyboard::Left))
             vel.x = 0;
 
-        if(!Keyboard::isKeyPressed(Keyboard::Up))
-        if(!Keyboard::isKeyPressed(Keyboard::Down))
-            vel.y = 0;
+        //if(!Keyboard::isKeyPressed(Keyboard::Up))
+        //if(!Keyboard::isKeyPressed(Keyboard::Down))
+        //    vel.y = 0;
 
         pB_laoba->SetLinearVelocity(vel);
 
@@ -127,9 +132,19 @@ int main()
 
             if((uintptr_t)it->GetUserData()==BIANPAO)
             {
-                sBianPao.setPosition(pos.x*SCALE, pos.y*SCALE);
-                sBianPao.setRotation(angle*DEG);
-                window.draw(sBianPao);
+                if((pos.x*SCALE > kucha_x-35 && pos.x*SCALE < kucha_x+35 && 
+                pos.y*SCALE < kucha_y+35 && pos.y*SCALE > kucha_y-35) || boom_flag)
+                {
+                    boom_flag = true;
+                    sBoom.setPosition(kucha_x, kucha_y);
+                    window.draw(sBoom);
+                }
+                else
+                {
+                    sBianPao.setPosition(pos.x*SCALE, pos.y*SCALE);
+                    sBianPao.setRotation(angle*DEG);
+                    window.draw(sBianPao);
+                }
             }
         }
         window.display();
