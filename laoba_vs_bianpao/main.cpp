@@ -25,26 +25,26 @@ int main()
     RenderWindow window(VideoMode(800,600), "Lao8 Volleyball");
     window.setFramerateLimit(60);
 
-    Texture t1, t2, t3;
-    t1.loadFromFile("./pic/cesuo.png");
-    t2.loadFromFile("./pic/bianpao.png");
-    t3.loadFromFile("./pic/lao8.png");
+    Texture t_bg, t_bianpao, t_lao8;
+    t_bg.loadFromFile("./pic/bg.png");
+    t_bianpao.loadFromFile("./pic/bianpao.png");
+    t_lao8.loadFromFile("./pic/lao8.png");
 
-    Sprite sBackground(t1), sBall(t2), sPlayer(t3);
-    sBall.setOrigin(32,32);
+    Sprite sBackground(t_bg), sBianPao(t_bianpao), sLao8(t_lao8);
+    sBianPao.setOrigin(32,32);
 
     //---box2d-------
-    setWall(400,520,2000,10);
-    setWall(400,450,10,170);
-    setWall(0,0,10,2000);
-    setWall(800,0,10,2000);
+    setWall(400,550,2000,10); //floor
+    setWall(350,30,10,70);//upper obstacle
+    setWall(350,400,10,120);//lower obstacle
+    setWall(0,0,10,2000); //left wall
+    setWall(800,0,10,2000); //right wall
+    setWall(400,0,2000,10);//ceiling
 
 
-   // b2PolygonShape shape;
-   // shape.SetAsBox(30/SCALE,30/SCALE);
     b2BodyDef bdef;
     bdef.type = b2_dynamicBody;
-    bdef.position.Set(5,1);
+    bdef.position.Set(10,1);
     b2Body *b = World.CreateBody(&bdef);
 
     b2CircleShape circle;
@@ -70,7 +70,6 @@ int main()
     int data_2 = 2;
     pBody->SetUserData((void*)data_2);
 
-
     while(window.isOpen())
     {
         Event e;
@@ -89,14 +88,21 @@ int main()
 
         if(Keyboard::isKeyPressed(Keyboard::Right)) vel.x = 5;
         if(Keyboard::isKeyPressed(Keyboard::Left)) vel.x = -5;
-        if(Keyboard::isKeyPressed(Keyboard::Up)) if(pos.y*SCALE>463) vel.y = -13;
+        if(Keyboard::isKeyPressed(Keyboard::Up)) vel.y = -5;
+        if(Keyboard::isKeyPressed(Keyboard::Down)) vel.y = 5;
+        
+        
+        //if(Keyboard::isKeyPressed(Keyboard::Up)) if(pos.y*SCALE>463) vel.y = -13;
 
         if(!Keyboard::isKeyPressed(Keyboard::Right))
         if(!Keyboard::isKeyPressed(Keyboard::Left))
             vel.x = 0;
 
-        pBody->SetLinearVelocity(vel);
+        if(!Keyboard::isKeyPressed(Keyboard::Up))
+        if(!Keyboard::isKeyPressed(Keyboard::Down))
+            vel.y = 0;
 
+        pBody->SetLinearVelocity(vel);
 
         ///////Draw/////////
         window.draw(sBackground);
@@ -108,18 +114,17 @@ int main()
 
             if((uintptr_t)it->GetUserData()==2)
             {
-                sPlayer.setPosition(pos.x*SCALE, pos.y*SCALE);
-                sPlayer.setRotation(angle*DEG);
-                window.draw(sPlayer);
+                sLao8.setPosition(pos.x*SCALE, pos.y*SCALE);
+                sLao8.setRotation(angle*DEG);
+                window.draw(sLao8);
             }
 
             if((uintptr_t)it->GetUserData()==1)
             {
-                sBall.setPosition(pos.x*SCALE, pos.y*SCALE);
-                sBall.setRotation(angle*DEG);
-                window.draw(sBall);
+                sBianPao.setPosition(pos.x*SCALE, pos.y*SCALE);
+                sBianPao.setRotation(angle*DEG);
+                window.draw(sBianPao);
             }
-
         }
         window.display();
     }
