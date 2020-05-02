@@ -29,20 +29,22 @@ int main()
     RenderWindow window(VideoMode(800,600), "Lao8 Volleyball");
     window.setFramerateLimit(60);
 
-    Texture t_bg, t_bianpao, t_lao8, t_kucha, t_boom;
+    Texture t_bg, t_bianpao, t_lao8, t_kucha, t_boom, t_teng;
     t_bg.loadFromFile("./pic/bg.png");
     t_bianpao.loadFromFile("./pic/bianpao.png");
     t_lao8.loadFromFile("./pic/lao8.png");
     t_kucha.loadFromFile("./pic/kucha.png");
     t_boom.loadFromFile("./pic/boom.png");
+    t_teng.loadFromFile("./pic/teng.png");
 
-    Sprite sBackground(t_bg), sBianPao(t_bianpao), sLao8(t_lao8), sKucha(t_kucha),sBoom(t_boom);
+    Sprite sBackground(t_bg), sBianPao(t_bianpao), sLao8(t_lao8), sKucha(t_kucha),sBoom(t_boom),sTeng(t_teng);
     sBianPao.setOrigin(32,32);
+    sLao8.setOrigin(32,32);
+    sKucha.setOrigin(32,32);
     int kucha_x = 600;
     int kucha_y = 300;
     sKucha.setPosition(kucha_x,kucha_y);
 
-    //---box2d-------
     setWall(400,550,2000,10); //floor
     setWall(350,30,10,70);//upper obstacle
     setWall(350,400,10,120);//lower obstacle
@@ -97,19 +99,12 @@ int main()
 
         if(Keyboard::isKeyPressed(Keyboard::Right)) vel.x = 5;
         if(Keyboard::isKeyPressed(Keyboard::Left)) vel.x = -5;
-        //if(Keyboard::isKeyPressed(Keyboard::Up)) vel.y = -5;
-        //if(Keyboard::isKeyPressed(Keyboard::Down)) vel.y = 5;
-        
-        
+       
         if(Keyboard::isKeyPressed(Keyboard::Up)) if(pos.y*SCALE>463) vel.y = -10;
 
         if(!Keyboard::isKeyPressed(Keyboard::Right))
         if(!Keyboard::isKeyPressed(Keyboard::Left))
             vel.x = 0;
-
-        //if(!Keyboard::isKeyPressed(Keyboard::Up))
-        //if(!Keyboard::isKeyPressed(Keyboard::Down))
-        //    vel.y = 0;
 
         pB_laoba->SetLinearVelocity(vel);
 
@@ -132,12 +127,14 @@ int main()
 
             if((uintptr_t)it->GetUserData()==BIANPAO)
             {
-                if((pos.x*SCALE > kucha_x-35 && pos.x*SCALE < kucha_x+35 && 
-                pos.y*SCALE < kucha_y+35 && pos.y*SCALE > kucha_y-35) || boom_flag)
+                if((pos.x*SCALE > kucha_x-55 && pos.x*SCALE < kucha_x+55 && 
+                pos.y*SCALE < kucha_y+55 && pos.y*SCALE > kucha_y-55) || boom_flag)
                 {
                     boom_flag = true;
                     sBoom.setPosition(kucha_x, kucha_y);
                     window.draw(sBoom);
+                    sTeng.setPosition(0, 30);
+                    window.draw(sTeng);
                 }
                 else
                 {
