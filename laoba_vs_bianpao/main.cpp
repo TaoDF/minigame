@@ -1,5 +1,9 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
+#include <iostream>
+#include <unistd.h>
+#include <time.h>
 using namespace sf;
 
 const float SCALE = 30.f;
@@ -24,6 +28,18 @@ void setWall(int x, int y, int w, int h)
 
 int main()
 {
+    Sound puke_sound;
+    SoundBuffer puke_buffer;
+    if (!puke_buffer.loadFromFile("./sound/puke.wav"))
+        std::cout<<"err"<<std::endl;
+    puke_sound.setBuffer(puke_buffer);
+
+    Sound aoligei_sound;
+    SoundBuffer aoligei_buffer;
+    if (!aoligei_buffer.loadFromFile("./sound/aoligei.wav"))
+        std::cout<<"err"<<std::endl;
+    aoligei_sound.setBuffer(aoligei_buffer);
+
     bool boom_flag = false;
     bool chibao_flag = false;
 
@@ -180,6 +196,9 @@ int main()
                     window.draw(sBoom);
                     sTeng.setPosition(0, 30);
                     window.draw(sTeng);
+                    aoligei_sound.play();
+                    window.display();
+                    sleep(20);
                 }
                 else
                 {
@@ -200,6 +219,9 @@ int main()
                     window.draw(sBurger);
                     sChibao.setPosition(0, 30);
                     window.draw(sChibao);
+                    puke_sound.play();
+                    window.display();
+                    sleep(20);
                 }
                 else
                 {
